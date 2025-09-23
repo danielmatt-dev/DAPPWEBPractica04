@@ -9,4 +9,37 @@
          version="5.0">
   <display-name>Archetype Created Web Application</display-name>
 
+  <!-- Config por variables de entorno; puedes setearlas en el container -->
+  <context-param>
+    <param-name>DB_URL</param-name>
+    <param-value>jdbc:postgresql://127.0.0.1:5432/personas</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_USER</param-name>
+    <param-value>postgres</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_PASS</param-name>
+    <param-value>armand99</param-value>
+  </context-param>
+
+  <!-- Listener que arma DI (DataSource, DAO, Service) -->
+  <listener>
+    <listener-class>com.example.personas.config.AppConfig</listener-class>
+  </listener>
+
+  <!-- Controller -->
+  <servlet>
+    <servlet-name>PersonasController</servlet-name>
+    <servlet-class>com.example.personas.web.PersonasController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PersonasController</servlet-name>
+    <url-pattern>/personas</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
 </web-app>
