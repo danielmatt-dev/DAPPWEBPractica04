@@ -39,6 +39,13 @@
       <version>5.1.0</version>
     </dependency>
 
+    <!-- Hibernate Core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.4.10.Final</version> <!-- Asegúrate de usar una versión compatible -->
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

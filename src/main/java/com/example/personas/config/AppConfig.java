@@ -1,37 +1,45 @@
 package com.example.personas.config;
 
-import com.example.personas.dao.PersonaDAO;
-import com.example.personas.dao.jdbc.PersonaDaoJdbc;
-import com.example.personas.db.DataSourceFactory;
-import com.example.personas.service.PersonaService;
-import com.example.personas.service.PersonaServiceImpl;
+import com.example.personas.dao.IDAO;
+import com.example.personas.dao.hibernate.DeptoDAO;
+import com.example.personas.dao.hibernate.EmpleadoDAO;
+import com.example.personas.models.Departamento;
+import com.example.personas.models.Empleado;
+import com.example.personas.service.ICrudService;
+import com.example.personas.service.impl.DeptoServiceImpl;
+import com.example.personas.service.impl.EmpleadoServiceImpl;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.sql.DataSource;
 
 public class AppConfig implements ServletContextListener {
 
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+
         ServletContext ctx = sce.getServletContext();
 
-        String url  = get(ctx, "DB_URL",  "jdbc:postgresql://127.0.0.1:5432/personas");
-        String user = get(ctx, "DB_USER", "postgres");
-        String pass = get(ctx, "DB_PASS", "armand99");
+        // 1. Inicializar Hibernate
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
-        DataSource ds = DataSourceFactory.create(url, user, pass);
-        PersonaDAO personaDao = new PersonaDaoJdbc(ds);
-        PersonaService personaService = new PersonaServiceImpl(personaDao);
+        // 2. Crear DAO genérico para Persona
+        IDAO<Empleado, Long> personaDao = new EmpleadoDAO(sessionFactory, Empleado.class); // PersonaDao extiende DaoBase<Persona>
+        IDAO<Departamento, Long> deptoDAO = new DeptoDAO(sessionFactory, Departamento.class);
 
-        // Inyección “manual” en el contexto
-        ctx.setAttribute("personaService", personaService);
-    }
+        // 3. Crear Service usando el DAO
+        ICrudService<Empleado, Long> empleadoService = new EmpleadoServiceImpl(personaDao);
+        ICrudService<Departamento, Long> deptoService = new DeptoServiceImpl(deptoDAO);
 
-    private static String get(ServletContext ctx, String key, String def) {
-        String v = ctx.getInitParameter(key);
-        return (v == null || v.isEmpty()) ? def : v;
+        // 4. Inyectar Service en el contexto de la aplicación
+        ctx.setAttribute("personaService", empleadoService);
+        ctx.setAttribute("deptoService", deptoService);
+
+        // Opcional: si quieres inyectar el DAO directamente
+        ctx.setAttribute("personaDao", personaDao);
     }
 
 }

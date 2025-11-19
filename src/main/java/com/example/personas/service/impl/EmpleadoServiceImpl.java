@@ -1,41 +1,43 @@
-package com.example.personas.service;
+package com.example.personas.service.impl;
 
-import com.example.personas.dao.PersonaDAO;
-import com.example.personas.model.Persona;
+import com.example.personas.dao.IDAO;
+import com.example.personas.models.Departamento;
+import com.example.personas.models.Empleado;
+import com.example.personas.service.ICrudService;
 
 import java.util.List;
 import java.util.Optional;
 
-public class PersonaServiceImpl implements PersonaService {
+public class EmpleadoServiceImpl implements ICrudService<Empleado, Long> {
 
-    private final PersonaDAO dao;
+    private final IDAO<Empleado, Long> dao;
 
-    public PersonaServiceImpl(PersonaDAO dao) {
+    public EmpleadoServiceImpl(IDAO<Empleado, Long> dao) {
         this.dao = dao;
     }
 
     @Override
-    public List<Persona> listar() { return dao.findAll(); }
+    public List<Empleado> listar() { return dao.findAll(); }
 
     @Override
-    public Optional<Persona> obtener(Long id) { return dao.findById(id); }
+    public Optional<Empleado> obtener(Long id) { return dao.findById(id); }
 
     @Override
-    public void crear(Persona p) {
+    public void crear(Empleado p) {
         validar(p, true);
         dao.insert(p);
     }
 
     @Override
-    public boolean actualizar(Persona p) {
+    public boolean actualizar(Empleado p, Long id) {
         validar(p, false);
-        return dao.update(p);
+        return dao.update(p, id);
     }
 
     @Override
     public boolean eliminar(Long id) { return dao.deleteById(id); }
 
-    private void validar(Persona p, boolean requireId) {
+    private void validar(Empleado p, boolean requireId) {
         if (p == null) throw new IllegalArgumentException("Persona requerida");
         if (requireId && p.getId() == null) throw new IllegalArgumentException("Clave requerida");
         if (isBlank(p.getNombre()) || isBlank(p.getDireccion()) || isBlank(p.getTelefono()))

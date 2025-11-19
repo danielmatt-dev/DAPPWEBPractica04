@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Personas</title>
+    <title>Empleados</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         :root { --gap: 10px; }
@@ -23,17 +23,17 @@
         .danger { background:#ffecec; color:#b40000; border: 1px solid #ffbcbc; }
         .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap); }
         label { display:block; font-size:12px; color:#444; margin-bottom:4px; }
-        input[type=text], input[type=tel] { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; }
+        input[type=text], input[type=tel], select { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; }
         .card { border:1px solid #eee; border-radius:10px; padding:16px; background:#fff; }
     </style>
 </head>
 <body>
-<h1>Personas</h1>
+<h1>Empleados</h1>
 
 <div class="toolbar">
-    <form action="${pageContext.request.contextPath}/personas" method="get" class="row">
+    <form action="${pageContext.request.contextPath}/empleados" method="get" class="row">
         <input type="hidden" name="action" value="new"/>
-        <button type="submit">Nueva persona</button>
+        <button type="submit">Nuevo empleado</button>
     </form>
     <c:if test="${not empty status}">
         <span class="muted">${status}</span>
@@ -50,28 +50,30 @@
         <th>Nombre</th>
         <th>Dirección</th>
         <th style="width:160px">Teléfono</th>
+        <th style="width:200px">Departamento</th>
         <th style="width:200px">Acciones</th>
     </tr>
     </thead>
     <tbody>
     <c:choose>
-        <c:when test="${empty personas}">
-            <tr><td colspan="5"><em>Sin registros</em></td></tr>
+        <c:when test="${empty empleados}">
+            <tr><td colspan="6"><em>Sin registros</em></td></tr>
         </c:when>
         <c:otherwise>
-            <c:forEach var="p" items="${personas}">
+            <c:forEach var="p" items="${empleados}">
                 <tr>
                     <td><c:out value="${p.id}"/></td>
                     <td><c:out value="${p.nombre}"/></td>
                     <td><c:out value="${p.direccion}"/></td>
                     <td><c:out value="${p.telefono}"/></td>
+                    <td><c:out value="${p.nombreDepto}"/></td>
                     <td class="actions">
-                        <form action="${pageContext.request.contextPath}/personas" method="get" style="display:inline;">
+                        <form action="${pageContext.request.contextPath}/empleados" method="get" style="display:inline;">
                             <input type="hidden" name="action" value="edit"/>
                             <input type="hidden" name="clave" value="${p.id}"/>
                             <button type="submit">Editar</button>
                         </form>
-                        <form action="${pageContext.request.contextPath}/personas" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar ${p.id}?');">
+                        <form action="${pageContext.request.contextPath}/empleados" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar ${p.id}?');">
                             <input type="hidden" name="action" value="delete"/>
                             <input type="hidden" name="clave" value="${p.id}"/>
                             <button type="submit" class="danger">Eliminar</button>
@@ -89,8 +91,8 @@
 <div class="card">
     <c:choose>
         <c:when test="${not empty persona}">
-            <h3>Editar persona</h3>
-            <form action="${pageContext.request.contextPath}/personas" method="post">
+            <h3>Editar empleado</h3>
+            <form action="${pageContext.request.contextPath}/empleados" method="post">
                 <input type="hidden" name="action" value="update"/>
                 <div class="grid">
                     <div>
@@ -109,6 +111,16 @@
                         <label>Teléfono</label>
                         <input type="tel" name="telefono" value="${persona.telefono}" required/>
                     </div>
+                    <div>
+                        <label>Departamento</label>
+                        <select name="claveDepto" required>
+                            <c:forEach var="d" items="${departamentos}">
+                                <option value="${d.id}" <c:if test="${persona.depto.id == d.id}">selected</c:if>>
+                                        ${d.nombre}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
                 </div>
                 <div class="row" style="margin-top:12px;">
                     <div class="right">
@@ -118,8 +130,8 @@
             </form>
         </c:when>
         <c:when test="${param.action == 'new'}">
-            <h3>Nueva persona</h3>
-            <form action="${pageContext.request.contextPath}/personas" method="post">
+            <h3>Nuevo empleado</h3>
+            <form action="${pageContext.request.contextPath}/empleados" method="post">
                 <input type="hidden" name="action" value="create"/>
                 <div class="grid">
                     <div>
@@ -138,6 +150,14 @@
                         <label>Teléfono</label>
                         <input type="tel" name="telefono" required/>
                     </div>
+                    <div>
+                        <label>Departamento</label>
+                        <select name="claveDepto" required>
+                            <c:forEach var="d" items="${departamentos}">
+                                <option value="${d.id}">${d.nombre}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
                 </div>
                 <div class="row" style="margin-top:12px;">
                     <div class="right">
@@ -147,7 +167,7 @@
             </form>
         </c:when>
         <c:otherwise>
-            <span class="muted">Selecciona “Nueva persona” o “Editar”.</span>
+            <span class="muted">Selecciona “Nuevo empleado” o “Editar”.</span>
         </c:otherwise>
     </c:choose>
 </div>

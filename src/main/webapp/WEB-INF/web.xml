@@ -9,20 +9,6 @@
          version="5.0">
   <display-name>Archetype Created Web Application</display-name>
 
-  <!-- Config por variables de entorno; puedes setearlas en el container -->
-  <context-param>
-    <param-name>DB_URL</param-name>
-    <param-value>jdbc:postgresql://127.0.0.1:5432/personas</param-value>
-  </context-param>
-  <context-param>
-    <param-name>DB_USER</param-name>
-    <param-value>postgres</param-value>
-  </context-param>
-  <context-param>
-    <param-name>DB_PASS</param-name>
-    <param-value>armand99</param-value>
-  </context-param>
-
   <!-- Listener que arma DI (DataSource, DAO, Service) -->
   <listener>
     <listener-class>com.example.personas.config.AppConfig</listener-class>
@@ -30,12 +16,21 @@
 
   <!-- Controller -->
   <servlet>
-    <servlet-name>PersonasController</servlet-name>
-    <servlet-class>com.example.personas.web.PersonasController</servlet-class>
+    <servlet-name>EmpleadoController</servlet-name>
+    <servlet-class>com.example.personas.web.EmpleadoController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>PersonasController</servlet-name>
-    <url-pattern>/personas</url-pattern>
+    <servlet-name>EmpleadoController</servlet-name>
+    <url-pattern>/empleados</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DeptoController</servlet-name>
+    <servlet-class>com.example.personas.web.DeptoController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeptoController</servlet-name>
+    <url-pattern>/deptos</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>
